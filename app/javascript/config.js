@@ -1,22 +1,25 @@
+import { useDispatch } from "react-redux";
+
 // Actions
-const LOAD   = 'my-app/greetings/LOAD';
+const LOAD = "my-app/greetings/LOAD";
 // const CREATE = 'my-app/widgets/CREATE';
 // const UPDATE = 'my-app/widgets/UPDATE';
 // const REMOVE = 'my-app/widgets/REMOVE';
 
 // Reducer
-export default function reducer(state = {message: "a message"}, action = {}) {
+export default function reducer(state = {}, action = {}) {
   switch (action.type) {
     // do reducer stuff
     case LOAD:
-      return state
-    default: return state;
+      return { message: action.payload };
+    default:
+      return state;
   }
 }
 
 // Action Creators
-export function loadGreeting() {
-  return { type: LOAD };
+export function loadGreeting(payload) {
+  return { type: LOAD, payload: payload };
 }
 
 // export function createWidget(widget) {
@@ -33,6 +36,10 @@ export function loadGreeting() {
 
 // side effects, only as applicable
 // e.g. thunks, epics, etc
-// export function getWidget () {
-//   return dispatch => get('/widget').then(widget => dispatch(updateWidget(widget)))
-// }
+export function getMessage() {
+  return async (dispatch, getState) => {
+    const response = await fetch("/message.json");
+    const json = await response.json();
+    dispatch(loadGreeting(json.text));
+  };
+}
